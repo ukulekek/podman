@@ -2,10 +2,14 @@
 # each item is the same as the parameters to
 # https://docs.ansible.com/ansible/latest/collections/containers/podman/podman_play_module.html#ansible-collections-containers-podman-podman-play-module
 # with the following additions
-# kube_file_src: path to a file on the controller to be copied to kube_file on the managed node
-# kube_file_content: a string or YAML dict representation of the content of kube_file on the managed node
-# e.g. kube_file_src corresponds to the `src` parameter of the Ansible `copy` module
-# kube_file_content corresponds to the `content` parameter of the Ansible `copy` module
+# kube_file_src: path to a file on the controller to be copied to kube_file on the
+#   managed node
+# kube_file_content: a string or YAML dict representation of the content of
+#   kube_file on the managed node
+# e.g. kube_file_src corresponds to the `src` parameter of the Ansible `copy`
+#   module
+# kube_file_content corresponds to the `content` parameter of the Ansible
+#   `copy` module
 - name: Set per-container variables part 0
   set_fact:
     __podman_kube_spec: "{{ __podman_kube_spec_item |
@@ -113,8 +117,9 @@
       else __podman_kube_path ~ '/' ~ __podman_kube_name ~ '.yml' }}"
 
 - name: Get service name using systemd-escape
-  command: systemd-escape --template podman-kube@.service {{ __podman_kube_file | quote }}
-  register:  __podman_service_name
+  command: >-
+    systemd-escape --template podman-kube@.service {{ __podman_kube_file | quote }}
+  register: __podman_service_name
   when: __podman_activate_systemd_unit | bool
 
 - name: Cleanup containers and services
